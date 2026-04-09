@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ray Rajani — CS @ Bristol</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d0d0d;
+    --surface: #141414;
+    --surface2: #1c1c1c;
+    --border: rgba(255,255,255,0.08);
+    --text: #f0ece4;
+    --muted: #7a7770;
+    --accent: #c8f060;
+    --accent2: #60b8f0;
+    --serif: 'DM Serif Display', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Outfit', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 3rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(13,13,13,0.85);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+  }
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-top: 80px;
+  }
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 3rem 6rem 3rem;
+    border-right: 1px solid var(--border);
+  }
+  .hero-label {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.1s forwards;
+  }
+  .hero-name {
+    font-family: var(--serif);
+    font-size: clamp(3.5rem, 6vw, 6rem);
+    line-height: 1.05;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.2s forwards;
+  }
+  .hero-name em {
+    color: var(--accent);
+    font-style: italic;
+  }
+  .hero-desc {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 380px;
+    line-height: 1.8;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.35s forwards;
+  }
+  .hero-desc strong { color: var(--text); font-weight: 400; }
+  .hero-ctas {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.45s forwards;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0d0d0d;
+    font-weight: 500;
+  }
+  .btn-primary:hover { background: #d4f57a; transform: translateY(-1px); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: rgba(255,255,255,0.3); background: var(--surface); }
+
+  .hero-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 3rem;
+    opacity: 0;
+    animation: fadeIn 1s 0.6s forwards;
+  }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    border: 1px solid var(--border);
+    margin-bottom: 2rem;
+  }
+  .stat {
+    padding: 1.5rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .stat:nth-child(even) { border-right: none; }
+  .stat:nth-last-child(-n+2) { border-bottom: none; }
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 2.5rem;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .stack-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .chip {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    transition: all 0.2s;
+  }
+  .chip:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+
+  /* SECTION COMMON */
+  section {
+    padding: 6rem 3rem;
+    border-top: 1px solid var(--border);
+  }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 4rem;
+  }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+  }
+  .section-title {
+    font-family: var(--serif);
+    font-size: 2.5rem;
+    font-weight: 400;
+  }
+
+  /* PROJECTS */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1px;
+    border: 1px solid var(--border);
+  }
+  .project-card {
+    background: var(--surface);
+    padding: 2.5rem;
+    border-right: 1px solid var(--border);
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .project-card:hover::before { transform: scaleX(1); }
+  .project-card:hover { background: var(--surface2); }
+  .project-card:last-child { border-right: none; }
+
+  .project-tag {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+  }
+  .project-name {
+    font-family: var(--serif);
+    font-size: 1.7rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  .project-desc {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+  }
+  .project-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1.5rem;
+  }
+  .project-stack span {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    padding: 0.2rem 0.6rem;
+    background: rgba(200,240,96,0.08);
+    border: 1px solid rgba(200,240,96,0.2);
+    color: var(--accent);
+    border-radius: 2px;
+  }
+  .project-links {
+    display: flex;
+    gap: 1rem;
+  }
+  .project-link {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .project-link:hover { color: var(--text); }
+  .project-highlight {
+    display: inline-block;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    background: rgba(200,240,96,0.12);
+    border-radius: 20px;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    font-family: var(--mono);
+  }
+
+  /* EXPERIENCE */
+  .exp-list { display: flex; flex-direction: column; gap: 0; }
+  .exp-item {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 3rem;
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+  .exp-item:first-child { border-top: 1px solid var(--border); }
+  .exp-date {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    padding-top: 0.2rem;
+    letter-spacing: 0.04em;
+  }
+  .exp-role {
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 0.2rem;
+  }
+  .exp-org {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--accent2);
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.04em;
+  }
+  .exp-desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+  .about-text { font-size: 1.1rem; line-height: 1.9; color: var(--muted); }
+  .about-text strong { color: var(--text); font-weight: 400; }
+  .about-text p + p { margin-top: 1.5rem; }
+  .about-aside { display: flex; flex-direction: column; gap: 2rem; }
+  .aside-block { }
+  .aside-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .aside-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.4rem 0;
+    font-size: 0.88rem;
+  }
+  .aside-item span:last-child {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  /* CONTACT */
+  .contact-inner {
+    max-width: 600px;
+  }
+  .contact-tagline {
+    font-family: var(--serif);
+    font-size: 2rem;
+    line-height: 1.3;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+  }
+  .contact-tagline em { color: var(--accent); font-style: italic; }
+  .contact-text { color: var(--muted); margin-bottom: 2.5rem; font-size: 0.95rem; }
+  .contact-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.2rem; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-left { padding: 4rem 1.5rem 2rem; border-right: none; border-bottom: 1px solid var(--border); }
+    .hero-right { padding: 2rem 1.5rem 4rem; }
+    section { padding: 4rem 1.5rem; }
+    .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    .stat-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">ray.rajani</span>
+  <ul class="nav-links">
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="border-top: none; padding: 0;">
+  <div class="hero-left">
+    <p class="hero-label">// MEng Computer Science · Bristol</p>
+    <h1 class="hero-name">Rahul<br><em>"Ray"</em><br>Rajani</h1>
+    <p class="hero-desc">
+      I build things with code — from <strong>space horror games</strong> to <strong>healthcare demos</strong>. 
+      CS undergrad at Bristol with a thing for hackathons, game dev, and making tech useful.
+    </p>
+    <div class="hero-ctas">
+      <a href="https://f1elo.me" class="btn btn-primary">f1elo.me ↗</a>
+      <a href="https://linkedin.com/in/rahul-rajani-0b5508266" class="btn btn-secondary" target="_blank">LinkedIn ↗</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-num">A*</div>
+        <div class="stat-label">A-Level Maths</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">24h</div>
+        <div class="stat-label">BrisHack build time</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">1st</div>
+        <div class="stat-label">Mission to Mars</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">MEng</div>
+        <div class="stat-label">Degree (2025–29)</div>
+      </div>
+    </div>
+    <div class="stack-chips">
+      <span class="chip">Python</span>
+      <span class="chip">C</span>
+      <span class="chip">Haskell</span>
+      <span class="chip">C++</span>
+      <span class="chip">JavaScript</span>
+      <span class="chip">HTML/CSS</span>
+      <span class="chip">Unity</span>
+      <span class="chip">Git</span>
+      <span class="chip">Verilog</span>
+      <span class="chip">Raspberry Pi</span>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header reveal">
+    <span class="section-num">01 /</span>
+    <h2 class="section-title">Projects</h2>
+  </div>
+  <div class="projects-grid">
+    <!-- F1 ELO - FEATURED -->
+    <div class="project-card reveal" style="grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; border-right: none;">
+      <div>
+        <div class="project-highlight">🏎️ Live at f1elo.me</div>
+        <div class="project-tag">Data · Sports · Web App</div>
+        <h3 class="project-name">F1 ELO Rankings</h3>
+        <p class="project-desc">
+          A custom Elo rating system for every Formula 1 driver, updated after every Grand Prix. Rather than copying existing head-to-head teammate models, I built my own weighted performance scoring pipeline from scratch — iteratively recalculating driver ratings using race performance scores, a delta against their pre-race Elo, and a fixed weighting factor.
+        </p>
+        <p class="project-desc" style="margin-top: -0.5rem;">
+          To make abstract numbers meaningful, ratings are mapped onto a linear interpolation against F1 25 game ratings — so you can actually visualise what a score of 1721 means in practice.
+        </p>
+        <div class="project-stack">
+          <span>JavaScript</span>
+          <span>HTML/CSS</span>
+          <span>Data Modelling</span>
+          <span>Elo Algorithm</span>
+          <span>Linear Interpolation</span>
+        </div>
+      </div>
+      <div style="display: flex; flex-direction: column; justify-content: center; gap: 1.5rem;">
+        <div style="background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 1.5rem; font-family: var(--mono); font-size: 0.8rem; line-height: 2;">
+          <div style="color: var(--muted); margin-bottom: 0.75rem; font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;">Example: Pierre Gasly (Bahrain)</div>
+          <div><span style="color: var(--muted);">Race rating</span> <span style="color: var(--accent);">8.6</span></div>
+          <div><span style="color: var(--muted);">Perf. score</span> <span style="color: var(--text);">1000 + (8.6 × 100) = 1860</span></div>
+          <div><span style="color: var(--muted);">Elo delta</span> <span style="color: var(--text);">1860 − 1714 = 146</span></div>
+          <div><span style="color: var(--muted);">× K factor</span> <span style="color: var(--text);">146 × 0.05 = +7</span></div>
+          <div><span style="color: var(--muted);">New Elo</span> <span style="color: var(--accent); font-weight: 500;">1721</span></div>
+        </div>
+        <div class="project-links">
+          <a href="https://f1elo.me" class="btn btn-primary" target="_blank" style="font-size: 0.78rem;">Visit f1elo.me ↗</a>
+          <a href="https://github.com/RahulRajani/F1-ELO" class="project-link" target="_blank">↗ GitHub</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- BrisHack -->
+    <div class="project-card reveal">
+      <div class="project-highlight">🏆 BrisHack 2025</div>
+      <div class="project-tag">Game Dev · Hackathon</div>
+      <h3 class="project-name">You Can't Run</h3>
+      <p class="project-desc">
+        A space-horror survival game built in 24 hours at BrisHack. You're stranded on a desolate planet — and you aren't alone. 
+        Shipped a playable build with 30 minutes to spare after GitHub's file size limits forced manual version control via Google Drive.
+      </p>
+      <div class="project-stack">
+        <span>Unity</span>
+        <span>C#</span>
+        <span>24h Sprint</span>
+      </div>
+      <div class="project-links">
+        <a href="https://github.com/rahulrayrajani" class="project-link" target="_blank">↗ GitHub</a>
+      </div>
+    </div>
+    <!-- Tetris -->
+    <div class="project-card reveal">
+      <div class="project-tag">Web · Game</div>
+      <h3 class="project-name">Tetris Clone</h3>
+      <p class="project-desc">
+        Built a fully functional Tetris game from scratch during a Softwire placement. No frameworks — just vanilla JavaScript, HTML, and CSS. A solid exercise in game loops and collision detection.
+      </p>
+      <div class="project-stack">
+        <span>JavaScript</span>
+        <span>HTML</span>
+        <span>CSS</span>
+      </div>
+      <div class="project-links">
+        <a href="https://github.com/RahulRajani" class="project-link" target="_blank">↗ GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-header reveal">
+    <span class="section-num">02 /</span>
+    <h2 class="section-title">Experience</h2>
+  </div>
+  <div class="exp-list">
+    <div class="exp-item reveal">
+      <div class="exp-date">Jul 2024 · 1 month</div>
+      <div>
+        <div class="exp-role">Work Experience — Mission to Mars</div>
+        <div class="exp-org">Tech Cornwall</div>
+        <div class="exp-desc">Won the Mission to Mars challenge with team Astro Mechanics. Programmed Mars rovers through 18 tasks using C++ and Raspberry Pi hardware. Learned agile/scrum principles through hands-on exercises and presented to VIPs at the grand finale.</div>
+      </div>
+    </div>
+    <div class="exp-item reveal">
+      <div class="exp-date">Feb 2024 · 1 month</div>
+      <div>
+        <div class="exp-role">Work Experience — Healthcare Tech</div>
+        <div class="exp-org">Cisco</div>
+        <div class="exp-desc">Built a misdiagnosis prevention demo and pitched it Dragon's Den-style. Met with MP Seema Malhotra to discuss real-world impact of the tech. Expanded knowledge of the industry through webinars across Cisco's divisions.</div>
+      </div>
+    </div>
+    <div class="exp-item reveal">
+      <div class="exp-date">Oct 2023 · 1 month</div>
+      <div>
+        <div class="exp-role">Web Developer (Work Experience)</div>
+        <div class="exp-org">Softwire</div>
+        <div class="exp-desc">Built a Tetris clone in vanilla JavaScript, HTML, and CSS during a placement at one of the UK's top software consultancies.</div>
+      </div>
+    </div>
+    <div class="exp-item reveal">
+      <div class="exp-date">Aug 2023 · 1 month</div>
+      <div>
+        <div class="exp-role">STEM Program Participant</div>
+        <div class="exp-org">Morgan Stanley</div>
+        <div class="exp-desc">Participated in the Studying in STEM program — panel sessions, career workshops, and insights into Morgan Stanley's technology challenges.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header reveal">
+    <span class="section-num">03 /</span>
+    <h2 class="section-title">About</h2>
+  </div>
+  <div class="about-grid">
+    <div class="about-text reveal">
+      <p>
+        I'm Ray — a first-year <strong>MEng Computer Science</strong> student at the University of Bristol (class of 2029). 
+        I got into CS because I genuinely love building things: software that does something real, whether that's a game that keeps you up at night or a tool that makes someone's life easier.
+      </p>
+      <p>
+        Before Bristol, I got <strong>A*AAA</strong> in Maths, Further Maths, Physics, and Chemistry at A-Level — which was hard, but also confirmed I like problems that don't have obvious answers.
+      </p>
+      <p>
+        Outside code, I'm a <strong>Scout Young Leader</strong>, a hackathon regular, and someone who has learned the hard way that Monster Energy tastes terrible (but sometimes necessary).
+      </p>
+    </div>
+    <div class="about-aside reveal">
+      <div class="aside-block">
+        <div class="aside-label">Education</div>
+        <div class="aside-item">
+          <span>MEng Computer Science</span>
+          <span>Bristol · 2025–29</span>
+        </div>
+        <div class="aside-item">
+          <span>A-Levels (A*AAA)</span>
+          <span>Brampton College</span>
+        </div>
+      </div>
+      <div class="aside-block">
+        <div class="aside-label">Languages</div>
+        <div class="aside-item"><span>English</span><span>Native</span></div>
+        <div class="aside-item"><span>French</span><span>Working</span></div>
+      </div>
+      <div class="aside-block">
+        <div class="aside-label">Interests</div>
+        <div class="aside-item"><span>Game Development</span></div>
+        <div class="aside-item"><span>AI &amp; Machine Learning</span></div>
+        <div class="aside-item"><span>Hackathons</span></div>
+        <div class="aside-item"><span>Scouting</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner reveal">
+    <h2 class="contact-tagline">Let's build something <em>interesting</em>.</h2>
+    <p class="contact-text">
+      I'm open to internships, collaborations, and hackathon teammates. 
+      If you've got a cool idea or just want to chat CS, drop me a message.
+    </p>
+    <div class="contact-links">
+      <a href="mailto:ray@example.com" class="btn btn-primary">Email me ↗</a>
+      <a href="https://linkedin.com/in/rahul-rajani-0b5508266" class="btn btn-secondary" target="_blank">LinkedIn ↗</a>
+      <a href="https://github.com/rahulrayrajani" class="btn btn-secondary" target="_blank">GitHub ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>© 2025 Rahul "Ray" Rajani</span>
+  <span>MEng CS · University of Bristol</span>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
